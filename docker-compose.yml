@@ -1,0 +1,27 @@
+version: '2'
+services:
+  front:
+    build: ./front
+    volumes:
+      - ./front/dist:/usr/share/nginx/html
+    ports:
+     - "8080:80"
+    depends_on:
+     - api
+
+  api:
+    build: ./api
+    volumes:
+      - ./api:/mnt
+    depends_on:
+     - db
+    ports:
+     - "8081:80"
+    command: node_modules/.bin/nodemon -L --watch src index.js
+
+  db:
+    build: ./db
+    environment:
+      - POSTGRES_PASSWORD=dbpassword
+      - POSTGRES_USER=dbuser
+      - POSTGRES_DB=dbuser
