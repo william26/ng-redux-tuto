@@ -36372,7 +36372,7 @@ module.exports = angular;
  */
 
 var invariant = function(condition, format, a, b, c, d, e, f) {
-  if ("dev" !== 'production') {
+  if ("kubernetes" !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
     }
@@ -36430,7 +36430,7 @@ function baseAssign(object, source) {
 
 module.exports = baseAssign;
 
-},{"lodash._basecopy":6,"lodash.keys":18}],6:[function(require,module,exports){
+},{"lodash._basecopy":6,"lodash.keys":19}],6:[function(require,module,exports){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -36635,7 +36635,7 @@ function createAssigner(assigner) {
 
 module.exports = createAssigner;
 
-},{"lodash._bindcallback":8,"lodash._isiterateecall":11,"lodash.restparam":21}],10:[function(require,module,exports){
+},{"lodash._bindcallback":8,"lodash._isiterateecall":11,"lodash.restparam":22}],10:[function(require,module,exports){
 /**
  * lodash 3.9.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -36909,6 +36909,88 @@ function isObject(value) {
 module.exports = isIterateeCall;
 
 },{}],12:[function(require,module,exports){
+/**
+ * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var baseAssign = require('lodash._baseassign'),
+    createAssigner = require('lodash._createassigner'),
+    keys = require('lodash.keys');
+
+/**
+ * A specialized version of `_.assign` for customizing assigned values without
+ * support for argument juggling, multiple sources, and `this` binding `customizer`
+ * functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @param {Function} customizer The function to customize assigned values.
+ * @returns {Object} Returns `object`.
+ */
+function assignWith(object, source, customizer) {
+  var index = -1,
+      props = keys(source),
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index],
+        value = object[key],
+        result = customizer(value, source[key], key, object, source);
+
+    if ((result === result ? (result !== value) : (value === value)) ||
+        (value === undefined && !(key in object))) {
+      object[key] = result;
+    }
+  }
+  return object;
+}
+
+/**
+ * Assigns own enumerable properties of source object(s) to the destination
+ * object. Subsequent sources overwrite property assignments of previous sources.
+ * If `customizer` is provided it is invoked to produce the assigned values.
+ * The `customizer` is bound to `thisArg` and invoked with five arguments:
+ * (objectValue, sourceValue, key, object, source).
+ *
+ * **Note:** This method mutates `object` and is based on
+ * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
+ *
+ * @static
+ * @memberOf _
+ * @alias extend
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @param {Function} [customizer] The function to customize assigned values.
+ * @param {*} [thisArg] The `this` binding of `customizer`.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
+ * // => { 'user': 'fred', 'age': 40 }
+ *
+ * // using a customizer callback
+ * var defaults = _.partialRight(_.assign, function(value, other) {
+ *   return _.isUndefined(value) ? other : value;
+ * });
+ *
+ * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+ * // => { 'user': 'barney', 'age': 36 }
+ */
+var assign = createAssigner(function(object, source, customizer) {
+  return customizer
+    ? assignWith(object, source, customizer)
+    : baseAssign(object, source);
+});
+
+module.exports = assign;
+
+},{"lodash._baseassign":5,"lodash._createassigner":9,"lodash.keys":19}],13:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -38141,7 +38223,7 @@ curry.placeholder = {};
 module.exports = curry;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -38372,7 +38454,7 @@ function isObjectLike(value) {
 
 module.exports = isArguments;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -38554,7 +38636,7 @@ function isNative(value) {
 
 module.exports = isArray;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * lodash 3.0.8 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -38631,7 +38713,7 @@ function isObject(value) {
 
 module.exports = isFunction;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -38670,7 +38752,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -38775,7 +38857,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"lodash._basefor":7,"lodash.isarguments":13,"lodash.keysin":19}],18:[function(require,module,exports){
+},{"lodash._basefor":7,"lodash.isarguments":14,"lodash.keysin":20}],19:[function(require,module,exports){
 /**
  * lodash 3.1.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -39013,7 +39095,7 @@ function keysIn(object) {
 
 module.exports = keys;
 
-},{"lodash._getnative":10,"lodash.isarguments":13,"lodash.isarray":14}],19:[function(require,module,exports){
+},{"lodash._getnative":10,"lodash.isarguments":14,"lodash.isarray":15}],20:[function(require,module,exports){
 /**
  * lodash 3.0.8 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -39147,7 +39229,7 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"lodash.isarguments":13,"lodash.isarray":14}],20:[function(require,module,exports){
+},{"lodash.isarguments":14,"lodash.isarray":15}],21:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -41517,7 +41599,7 @@ function property(path) {
 module.exports = map;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * lodash 3.6.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -41586,7 +41668,7 @@ function restParam(func, start) {
 
 module.exports = restParam;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -41594,7 +41676,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":24}],23:[function(require,module,exports){
+},{"./_overArg":25}],24:[function(require,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -41616,7 +41698,7 @@ function isHostObject(value) {
 
 module.exports = isHostObject;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -41633,7 +41715,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -41664,7 +41746,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var getPrototype = require('./_getPrototype'),
     isHostObject = require('./_isHostObject'),
     isObjectLike = require('./isObjectLike');
@@ -41736,7 +41818,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_getPrototype":22,"./_isHostObject":23,"./isObjectLike":25}],27:[function(require,module,exports){
+},{"./_getPrototype":23,"./_isHostObject":24,"./isObjectLike":26}],28:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41840,7 +41922,7 @@ function getStateSlice(state, mapStateToScope) {
 
   return slice;
 }
-},{"../utils/shallowEqual":31,"../utils/wrapActionCreators":32,"invariant":4,"lodash.assign":33,"lodash.isfunction":15,"lodash.isobject":16,"lodash.isplainobject":17}],28:[function(require,module,exports){
+},{"../utils/shallowEqual":32,"../utils/wrapActionCreators":33,"invariant":4,"lodash.assign":12,"lodash.isfunction":16,"lodash.isobject":17,"lodash.isplainobject":18}],29:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -41854,7 +41936,7 @@ function digestMiddleware($rootScope) {
     };
   };
 }
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41967,7 +42049,7 @@ function ngReduxProvider() {
 
   this.$get.$inject = ['$injector'];
 }
-},{"./connector":27,"./digestMiddleware":28,"invariant":4,"lodash.assign":33,"lodash.curry":12,"lodash.isarray":14,"lodash.isfunction":15,"lodash.map":20,"redux":40}],30:[function(require,module,exports){
+},{"./connector":28,"./digestMiddleware":29,"invariant":4,"lodash.assign":12,"lodash.curry":13,"lodash.isarray":15,"lodash.isfunction":16,"lodash.map":21,"redux":40}],31:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41979,7 +42061,7 @@ var _ngRedux2 = _interopRequireDefault(_ngRedux);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = angular.module('ngRedux', []).provider('$ngRedux', _ngRedux2.default).name;
-},{"./components/ngRedux":29}],31:[function(require,module,exports){
+},{"./components/ngRedux":30}],32:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42011,7 +42093,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42024,89 +42106,7 @@ function wrapActionCreators(actionCreators) {
     return (0, _redux.bindActionCreators)(actionCreators, dispatch);
   };
 }
-},{"redux":40}],33:[function(require,module,exports){
-/**
- * lodash 3.2.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseAssign = require('lodash._baseassign'),
-    createAssigner = require('lodash._createassigner'),
-    keys = require('lodash.keys');
-
-/**
- * A specialized version of `_.assign` for customizing assigned values without
- * support for argument juggling, multiple sources, and `this` binding `customizer`
- * functions.
- *
- * @private
- * @param {Object} object The destination object.
- * @param {Object} source The source object.
- * @param {Function} customizer The function to customize assigned values.
- * @returns {Object} Returns `object`.
- */
-function assignWith(object, source, customizer) {
-  var index = -1,
-      props = keys(source),
-      length = props.length;
-
-  while (++index < length) {
-    var key = props[index],
-        value = object[key],
-        result = customizer(value, source[key], key, object, source);
-
-    if ((result === result ? (result !== value) : (value === value)) ||
-        (value === undefined && !(key in object))) {
-      object[key] = result;
-    }
-  }
-  return object;
-}
-
-/**
- * Assigns own enumerable properties of source object(s) to the destination
- * object. Subsequent sources overwrite property assignments of previous sources.
- * If `customizer` is provided it is invoked to produce the assigned values.
- * The `customizer` is bound to `thisArg` and invoked with five arguments:
- * (objectValue, sourceValue, key, object, source).
- *
- * **Note:** This method mutates `object` and is based on
- * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
- *
- * @static
- * @memberOf _
- * @alias extend
- * @category Object
- * @param {Object} object The destination object.
- * @param {...Object} [sources] The source objects.
- * @param {Function} [customizer] The function to customize assigned values.
- * @param {*} [thisArg] The `this` binding of `customizer`.
- * @returns {Object} Returns `object`.
- * @example
- *
- * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
- * // => { 'user': 'fred', 'age': 40 }
- *
- * // using a customizer callback
- * var defaults = _.partialRight(_.assign, function(value, other) {
- *   return _.isUndefined(value) ? other : value;
- * });
- *
- * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
- * // => { 'user': 'barney', 'age': 36 }
- */
-var assign = createAssigner(function(object, source, customizer) {
-  return customizer
-    ? assignWith(object, source, customizer)
-    : baseAssign(object, source);
-});
-
-module.exports = assign;
-
-},{"lodash._baseassign":5,"lodash._createassigner":9,"lodash.keys":18}],34:[function(require,module,exports){
+},{"redux":40}],34:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42329,7 +42329,7 @@ function combineReducers(reducers) {
   for (var i = 0; i < reducerKeys.length; i++) {
     var key = reducerKeys[i];
 
-    if ("dev" !== 'production') {
+    if ("kubernetes" !== 'production') {
       if (typeof reducers[key] === 'undefined') {
         (0, _warning2['default'])('No reducer provided for key "' + key + '"');
       }
@@ -42341,7 +42341,7 @@ function combineReducers(reducers) {
   }
   var finalReducerKeys = Object.keys(finalReducers);
 
-  if ("dev" !== 'production') {
+  if ("kubernetes" !== 'production') {
     var unexpectedKeyCache = {};
   }
 
@@ -42360,7 +42360,7 @@ function combineReducers(reducers) {
       throw sanityError;
     }
 
-    if ("dev" !== 'production') {
+    if ("kubernetes" !== 'production') {
       var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
       if (warningMessage) {
         (0, _warning2['default'])(warningMessage);
@@ -42384,7 +42384,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-},{"./createStore":39,"./utils/warning":41,"lodash/isPlainObject":26}],38:[function(require,module,exports){
+},{"./createStore":39,"./utils/warning":41,"lodash/isPlainObject":27}],38:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42685,7 +42685,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":26,"symbol-observable":42}],40:[function(require,module,exports){
+},{"lodash/isPlainObject":27,"symbol-observable":42}],40:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42723,7 +42723,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 */
 function isCrushed() {}
 
-if ("dev" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+if ("kubernetes" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
   (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
 }
 
@@ -43032,11 +43032,64 @@ var _todolist = require('./todolist');
 
 var _todolist2 = _interopRequireDefault(_todolist);
 
+var _todoInput = require('./todo-input');
+
+var _todoInput2 = _interopRequireDefault(_todoInput);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.components', [_todolist2.default]).name;
+exports.default = _angular2.default.module('app.components', [_todolist2.default, _todoInput2.default]).name;
 
-},{"./todolist":52,"angular":3}],52:[function(require,module,exports){
+},{"./todo-input":52,"./todolist":55,"angular":3}],52:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _todoInputComponent = require('./todo-input-component');
+
+var _todoInputComponent2 = _interopRequireDefault(_todoInputComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.todo-input', []).component('todoInput', _todoInputComponent2.default).name;
+
+},{"./todo-input-component":53,"angular":3}],53:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _todoInputController = require('./todo-input-controller');
+
+var _todoInputController2 = _interopRequireDefault(_todoInputController);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  template: '\n    <input type="text" ng-model="$ctrl.todoName" />\n    <button ng-click="$ctrl.addTodo()">ADD</button>\n  ',
+  controller: _todoInputController2.default
+};
+
+},{"./todo-input-controller":54}],54:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = TodoInputController;
+function TodoInputController() {
+
+  this.addTodo = function () {};
+}
+
+},{}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43055,7 +43108,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.todolist', []).component('todolist', _todolistComponent2.default).name;
 
-},{"./todolist-component":53,"angular":3}],53:[function(require,module,exports){
+},{"./todolist-component":56,"angular":3}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43069,11 +43122,11 @@ var _todolistController2 = _interopRequireDefault(_todolistController);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  template: '\n    <div>\n      <div ng-repeat="todo in $ctrl.todos track by todo.id" ng-bind="todo.name"></div>\n    <div>\n  ',
+  template: '\n    <div>\n      <div ng-repeat="todo in $ctrl.todos track by todo.id" ng-bind="todo.name"></div>\n      <todo-input></todo-input>\n    <div>\n  ',
   controller: _todolistController2.default
 };
 
-},{"./todolist-controller":54}],54:[function(require,module,exports){
+},{"./todolist-controller":57}],57:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43093,7 +43146,7 @@ function TodolistController($ngRedux, todoActions) {
   $ngRedux.dispatch(todoActions.fetch());
 }
 
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 var _angular = require('angular');
@@ -43129,7 +43182,7 @@ _angular2.default.module('app', [_ngRedux2.default, _angularUiRouter2.default, _
 
 _angular2.default.bootstrap(document.querySelector('#root'), ['app']);
 
-},{"./business":45,"./components":51,"angular":3,"angular-ui-router":1,"ng-redux":30}],56:[function(require,module,exports){
+},{"./business":45,"./components":51,"angular":3,"angular-ui-router":1,"ng-redux":31}],59:[function(require,module,exports){
 'use strict';
 
 var _app = require('./app');
@@ -43138,4 +43191,4 @@ var _app2 = _interopRequireDefault(_app);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./app":55}]},{},[56]);
+},{"./app":58}]},{},[59]);
