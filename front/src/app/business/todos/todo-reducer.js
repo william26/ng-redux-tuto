@@ -1,4 +1,5 @@
 import {noop} from 'angular';
+import immutable from 'immutable';
 
 export default function TodoReducerProvider(todoActionTypes) {
 
@@ -12,7 +13,7 @@ export default function TodoReducerProvider(todoActionTypes) {
     CREATE_ERROR
   } = todoActionTypes;
 
-  const initialState = [];
+  const initialState = new immutable.Map();
 
 
   this[FETCH_START] = (state) => {
@@ -20,7 +21,9 @@ export default function TodoReducerProvider(todoActionTypes) {
   };
 
   this[FETCH_SUCCESS] = (state, {todos}) => {
-    return todos;
+    return todos.reduce((todosMap, todo) => {
+      return todosMap.set(todo.id, immutable.fromJS(todo));
+    }, new immutable.Map());
   };
 
   this[FETCH_ERROR] = (state, {error}) => {
@@ -30,7 +33,7 @@ export default function TodoReducerProvider(todoActionTypes) {
   this[CREATE_START] = state => state;
 
   this[CREATE_SUCCESS] = (state, {todo}) => {
-    return [...state, todo];
+    return state.set(todo.id, immutable.fromJS(todo));
   };
 
   this[CREATE_ERROR] = state => state;
