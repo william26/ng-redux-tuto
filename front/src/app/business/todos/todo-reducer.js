@@ -5,7 +5,11 @@ export default function TodoReducerProvider(todoActionTypes) {
   const {
     FETCH_START,
     FETCH_SUCCESS,
-    FETCH_ERROR
+    FETCH_ERROR,
+
+    CREATE_START,
+    CREATE_SUCCESS,
+    CREATE_ERROR
   } = todoActionTypes;
 
   const initialState = [];
@@ -22,6 +26,14 @@ export default function TodoReducerProvider(todoActionTypes) {
   this[FETCH_ERROR] = (state, {error}) => {
     return state;
   };
+
+  this[CREATE_START] = state => state;
+
+  this[CREATE_SUCCESS] = (state, {todo}) => {
+    return [...state, todo];
+  };
+
+  this[CREATE_ERROR] = state => state;
 
 
   this.reducer = (state = initialState, {type, payload}) => {

@@ -42961,12 +42961,54 @@ exports.default = function ($http) {
       });
     };
   };
+
+  this.createStart = function () {
+    return {
+      type: todoActionTypes.CREATE_START
+    };
+  };
+
+  this.createSuccess = function (todo) {
+    return {
+      type: todoActionTypes.CREATE_SUCCESS,
+      payload: { todo: todo }
+    };
+  };
+
+  this.createError = function (error) {
+    return {
+      type: todoActionTypes.CREATE_ERROR,
+      payload: { error: error }
+    };
+  };
+
+  this.create = function (todoName) {
+    return function (dispatch) {
+      dispatch(_this.createStart());
+
+      $http({
+        url: '/api/todo',
+        method: 'POST',
+        data: {
+          name: todoName
+        }
+      }).then(function (response) {
+        dispatch(_this.createSuccess(response.data));
+      }).catch(function (error) {
+        dispatch(_this.createError(error));
+      });
+    };
+  };
 };
 
 var todoActionTypes = exports.todoActionTypes = {
   FETCH_START: 'TODOS_FETCH_START',
   FETCH_SUCCESS: 'TODOS_FETCH_SUCCESS',
-  FETCH_ERROR: 'TODOS_FETCH_ERROR'
+  FETCH_ERROR: 'TODOS_FETCH_ERROR',
+
+  CREATE_START: 'TODOS_CREATE_START',
+  CREATE_SUCCESS: 'TODOS_CREATE_SUCCESS',
+  CREATE_ERROR: 'TODOS_CREATE_ERROR'
 };
 
 },{}],50:[function(require,module,exports){
@@ -42979,12 +43021,17 @@ exports.default = TodoReducerProvider;
 
 var _angular = require('angular');
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function TodoReducerProvider(todoActionTypes) {
   var _this = this;
 
   var FETCH_START = todoActionTypes.FETCH_START;
   var FETCH_SUCCESS = todoActionTypes.FETCH_SUCCESS;
   var FETCH_ERROR = todoActionTypes.FETCH_ERROR;
+  var CREATE_START = todoActionTypes.CREATE_START;
+  var CREATE_SUCCESS = todoActionTypes.CREATE_SUCCESS;
+  var CREATE_ERROR = todoActionTypes.CREATE_ERROR;
 
 
   var initialState = [];
@@ -43005,11 +43052,25 @@ function TodoReducerProvider(todoActionTypes) {
     return state;
   };
 
+  this[CREATE_START] = function (state) {
+    return state;
+  };
+
+  this[CREATE_SUCCESS] = function (state, _ref3) {
+    var todo = _ref3.todo;
+
+    return [].concat(_toConsumableArray(state), [todo]);
+  };
+
+  this[CREATE_ERROR] = function (state) {
+    return state;
+  };
+
   this.reducer = function () {
     var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
-    var _ref3 = arguments[1];
-    var type = _ref3.type;
-    var payload = _ref3.payload;
+    var _ref4 = arguments[1];
+    var type = _ref4.type;
+    var payload = _ref4.payload;
 
     return typeof _this[type] === 'function' ? _this[type](state, payload) : state;
   };
@@ -43084,9 +43145,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = TodoInputController;
-function TodoInputController() {
+function TodoInputController($ngRedux, todoActions) {
 
-  this.addTodo = function () {};
+  this.addTodo = function () {
+    $ngRedux.dispatch(todoActions.create(this.todoName));
+  };
 }
 
 },{}],55:[function(require,module,exports){
