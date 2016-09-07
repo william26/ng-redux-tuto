@@ -1,32 +1,26 @@
 import angular from 'angular';
-import reduxThunk from 'redux-thunk';
-import 'redux';
 import ngRedux from 'ng-redux';
+import uiRouter from 'angular-ui-router';
+
+import businessModule from './business';
+import componentsModule from './components';
 
 angular
   .module('app', [
-    ngRedux
+    ngRedux,
+    uiRouter,
+    businessModule,
+    componentsModule
   ])
 
-  .config(($ngReduxProvider, $windowProvider) => {
-
-    const $window = $windowProvider.$get();
-    $ngReduxProvider.createStoreWith(
-      function (state, action) {
-        return state;
-      },
-      [reduxThunk],
-      [$window.devToolsExtension ? $window.devToolsExtension() : f => f],
-      {}
-    );
+  .config((appStoreProvider) => {
+    appStoreProvider.initializeStore();
   })
 
-  .run(($ngRedux) => {
-    console.log('running');
-
-    $ngRedux.dispatch({
-      type: 'hello world',
-      payload: {bla: 'l'}
+  .config(($stateProvider) => {
+    $stateProvider.state('todolist', {
+      url: '',
+      template: '<todolist></todolist>'
     });
   });
 
